@@ -9,8 +9,39 @@ body {
 }
 
 h1 {
-    font-size: 1rem;
-    letter-spacing: 0.125rem;
+	font-size: 1rem;
+	letter-spacing: 0.125rem;
 	text-align: center;
-    text-transform: uppercase;
+	text-transform: uppercase;
+}
+
+.visually-hidden {
+	position: absolute;
+	width: 1px;
+	height: 1px;
+	margin: -1px;
+	padding: 0;
+	overflow: hidden;
+	clip: rect(0, 0, 0, 0);
+	border: 0;
+}
+
+button[data-sides] {
+	display: flex;
+	flex-direction: column;
+	gap: 0.25rem;
+	height: 64px;
+	justify-content: space-between;
+	padding: 0.25rem;
+	width: 64px;
+}
+
+button[data-sides] output:empty {
+	display: none;
+}
+
+button[data-sides] output {
+	align-self: center;
+	font-size: 1.5rem;
+	font-weight: bold;
 }

@@ -1,18 +1,112 @@
 <!doctype html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8">
-		<title>Skeleton Dice</title>
-		<link rel="stylesheet" type="text/css" href="/styles.css" />
-	</head>
-	<body>
-		<main id="app">
-            <h1>Skeleton Dice</h1>
-            <ul id="dice"></ul>
-            <div>
-                <button id="add-button">Add D6</button>
-            </div>
-		</main>
-	</body>
-	<script src="/main.js"></script>
+
+<head>
+	<meta charset="UTF-8">
+	<title>Skeleton Dice</title>
+	<link rel="stylesheet" type="text/css" href="/styles.css" />
+</head>
+
+<body>
+	<main id="app">
+		<h1>Skeleton Dice</h1>
+		<div>
+			<form id="add-die">
+				<label>d<input name="sides" type="number" /></label>
+				<button type="submit">Add Die</button>
+			</form>
+			<form id="delete-die">
+				<label>Delete die<input name="delete-mode" type="checkbox" /></label>
+			</form>
+			<button id="roll-all">Roll All</button>
+		</div>
+		<ul id="dice"></ul>
+	</main>
+</body>
+<script>
+	let diceUl = document.getElementById('dice')
+
+	function addDie(sides = 6) {
+		let li = document.createElement('li')
+		li.innerHTML = `<button aria-live="polite" data-sides="${sides}">
+			<label>d${sides}</label>
+			<output></output>
+		</button>`
+		diceUl.appendChild(li)
+	}
+
+	renderDice()
+
+	document.querySelector("form#add-die").addEventListener('submit', (event) => {
+		event.preventDefault()
+		let sides = event.target.querySelector('input[name="sides"]').value
+		if (!sides) {
+			return
+		}
+		let url = new URL(window.location.href)
+		let params = new URLSearchParams(url.search.slice(1))
+		params.append('d', sides)
+
+		window.history.pushState({}, '', url.origin + '?' + params)
+		addDie(sides)
+	});
+
+	function getSearchParams() {
+		let url = new URL(window.location.href)
+		return new URLSearchParams(url.search.slice(1))
+	}
+
+	function renderDice() {
+		diceUl.textContent = "";
+		let params = getSearchParams()
+		params.getAll('d').forEach((value) => {
+			addDie(value)
+		})
+	}
+
+	function isDeleteMode() {
+		return document.querySelector("[name=delete-mode]").checked;
+	}
+
+	function rollDie(button) {
+		let sides = parseInt(button.dataset.sides);
+		let value = Math.floor(Math.random() * sides) + 1;
+		button.querySelector("output").textContent = value;
+	}
+
+	function removeDie(button) {
+		let url = new URL(window.location.href)
+		let params = new URLSearchParams(url.search.slice(1));
+		let found = false;
+		let next = [...params.getAll("d")].reduce((acc, current) => {
+			if (current == button.dataset.sides && !found) {
+				found = true;
+				return acc;
+			}
+			acc.push("d=" + current);
+			return acc;
+		}, []);
+
+		window.history.pushState({}, '', url.origin + '?' + next.join("&"));
+		button.parentElement.remove();
+	}
+
+	document.addEventListener("click", e => {
+		let element = e.target.dataset.sides ? e.target : (e.target.parentElement && e.target.parentElement.dataset.sides) ? e.target.parentElement : null;
+		if (element) {
+			if (isDeleteMode()) {
+				removeDie(element);
+			} else {
+				rollDie(element);
+			}
+		}
+	})
+
+	document.getElementById("roll-all").addEventListener("click", e => {
+		document.querySelectorAll("[data-sides]").forEach(die => {
+			rollDie(die);
+		})
+	})
+</script>
+
 </html>
