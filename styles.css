@@ -1,11 +1,26 @@
+* {
+	box-sizing: border-box;
+}
+
+:root {
+	--un: min(1vw, 1vh);
+}
+
+html,
 body {
+	height: 100%;
+}
+
+body {
+	font-family: system-ui, sans;
+	display: flex;
+	flex-direction: column;
 	margin: 0;
 }
 
-#app {
-	margin: 0 auto;
-	max-width: 30rem;
-	padding: 1rem;
+main {
+	flex: 1;
+	overflow-y: auto;
 }
 
 h1 {
@@ -13,6 +28,25 @@ h1 {
 	letter-spacing: 0.125rem;
 	text-align: center;
 	text-transform: uppercase;
+}
+
+footer>button,
+footer summary {
+	align-items: center;
+	background-color: transparent;
+	border: none;
+	display: flex;
+	justify-content: center;
+}
+
+footer button:active,
+footer details[open] summary {
+	color: #3478f6;
+}
+
+footer svg {
+	height: 24px;
+	width: 24px;
 }
 
 .visually-hidden {
@@ -26,14 +60,36 @@ h1 {
 	border: 0;
 }
 
+#dice {
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	gap: 1rem;
+	justify-content: center;
+	list-style-type: none;
+	margin: 0;
+	padding: 1rem;
+}
+
+#dice li {
+	display: flex;
+	justify-content: center;
+}
+
+button {
+	font: inherit;
+}
+
 button[data-sides] {
+	--size: calc(var(--un) * 30);
 	display: flex;
 	flex-direction: column;
 	gap: 0.25rem;
-	height: 64px;
+	/* height: var(--size); */
 	justify-content: space-between;
 	padding: 0.25rem;
-	width: 64px;
+	/* width: var(--size); */
+	width: 100%;
+	aspect-ratio: 1 / 1;
 }
 
 button[data-sides] output:empty {
@@ -44,4 +100,93 @@ button[data-sides] output {
 	align-self: center;
 	font-size: 1.5rem;
 	font-weight: bold;
+}
+
+footer {
+	--border-width: 1px;
+	border-top: var(--border-width) solid lightgray;
+	display: grid;
+	grid-template-columns: repeat(3, 1fr);
+	position: relative;
+}
+
+footer :is(> button, summary) {
+	padding: 1rem;
+}
+
+footer details>*:last-child {
+	background: lightgray;
+	bottom: calc(100% + var(--border-width));
+	display: grid;
+	gap: 0.5rem;
+	left: 0;
+	right: 0;
+	padding: 1rem;
+	position: absolute;
+}
+
+output#sum {
+	display: block;
+	padding: 0.5rem;
+	text-align: center;
+}
+
+body:has(input[name=sum]:not(:checked)) output#sum {
+	display: none;
+}
+
+label:has(input[type=checkbox]) {
+	--color: hsla(0, 0%, 0%, 0.25);
+	align-items: center;
+	display: flex;
+	gap: 0.5rem;
+	justify-content: space-between;
+}
+
+label input[type=checkbox] {
+	border: 0;
+	clip: rect(0, 0, 0, 0);
+	height: 1px;
+	margin: -1px;
+	overflow: hidden;
+	padding: 0;
+	position: absolute;
+	width: 1px;
+}
+
+label:has(input[type=checkbox]) span,
+label:has(input[type=checkbox]) span::before,
+label:has(input[type=checkbox]) span::after {
+	transition: all 200ms ease-in-out;
+}
+
+label:has(input[type=checkbox]) span {
+	--height: 24px;
+	background-color: var(--color);
+	border-radius: 4px;
+	display: flex;
+	height: var(--height);
+	width: calc(2 * var(--height));
+	padding: 1.5px;
+}
+
+label:has(input[type=checkbox]) span::after {
+	background-color: white;
+	border-radius: 2px;
+	display: block;
+	content: "";
+	height: 100%;
+	width: 50%;
+}
+
+label:has(input[type=checkbox]:checked) {
+	--color: #3478f6;
+}
+
+label:has(input[type=checkbox][data-type=danger]:checked) {
+	--color: #f63434;
+}
+
+label:has(input[type=checkbox]:checked) span {
+	justify-content: end;
 }
