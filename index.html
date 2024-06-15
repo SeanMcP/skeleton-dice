@@ -139,7 +139,7 @@
 	}
 
 	document.addEventListener("click", e => {
-		let die = e.target.dataset.sides ? e.target : (e.target.parentElement && e.target.parentElement.dataset.sides) ? e.target.parentElement : null;
+		let die = e.target.closest('button[data-sides]')
 		if (die) {
 			if (isDeleteMode()) {
 				removeDie(die);
